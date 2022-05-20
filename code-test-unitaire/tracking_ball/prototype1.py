@@ -141,13 +141,13 @@ while True:
         if not ((middleScreenX == centerObjectX) & (middleScreenY == centerObjectY)):
             if not (middleScreenX == centerObjectX):
                 if (centerObjectX < middleScreenX):
-                    valeurBas = int((centerObjectX - middleScreenX))
-                    #print(int(valeurBas))
-                    #print("GAUCHE")
+                    valeurBas = int(-(centerObjectX - middleScreenX))
+                    print(int(valeurBas))
+                    print("GAUCHE")
                 else:
-                    valeurBas = int((centerObjectX - middleScreenX))
-                    #print(int(valeurBas))
-                    #print("DROITE")
+                    valeurBas = int(-(centerObjectX - middleScreenX))
+                    print(int(valeurBas))
+                    print("DROITE")
             if not (middleScreenY == centerObjectY):
                 if (centerObjectY < middleScreenY):
                     valeurHaut = int((middleScreenY - centerObjectY))
@@ -158,7 +158,8 @@ while True:
                     #print(int(valeurHaut))
                     #print("BAS")
         
-        if ((middleScreenX - radius/2 < centerObjectX < middleScreenX + radius/2) & (middleScreenY - radius/2 < centerObjectY < middleScreenY + radius/2)):
+        #if ((middleScreenX - radius/2 < centerObjectX < middleScreenX + radius/2) & (middleScreenY - radius/2 < centerObjectY < middleScreenY + radius/2)):
+        if ((middleScreenX - 80 < centerObjectX < middleScreenX + 80) & (middleScreenY - 80 < centerObjectY < middleScreenY + 80)):
             tirer=1
             print("TIRRRREEEEEERRR")
         else:
@@ -173,7 +174,7 @@ while True:
     message="/"+str(valeurHaut)+"/"+str(valeurBas)+"/"+str(tirer)+"/"+str(radius)
     value = write_read(message)
     #print(message) 
-    #print(value) 
+    print(value) 
     key = cv2.waitKey(1) & 0xFF
     # if the 'q' key is pressed, stop the loop
     if key == ord("q"):
