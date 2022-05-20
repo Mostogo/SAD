@@ -25,7 +25,7 @@ int Index2;
 int Index3;
 int Index4;
 int Index5;
-
+int cercleJaune;
 String valeurradius;
 String valeurRecueHaut;
 String valeurRecueTirer;
@@ -63,7 +63,7 @@ void loop() {
   valeurBas = valeurRecueBas.toInt();
   valeurTirer = valeurRecueTirer.toInt();
   radius = valeurradius.toInt();
-
+  cercleJaune = radius/2;
   //pasHaut = (int) valeurHaut/10;
   
   // controler le servomoteur du haut
@@ -71,14 +71,14 @@ void loop() {
     pasHaut = 1;
   }
   
-  else if((valeurHaut <= 150) || (valeurHaut >= -150)){
+  if((valeurHaut > radius && valeurHaut <= ((int) radius*1.8) ) || (valeurHaut < -radius && valeurHaut >= -((int) radius*1.8))){
     pasHaut = 2;
   }
   
-  else if((valeurHaut > 150 && valeurHaut <= 400) || (valeurHaut < -150 && valeurHaut >= -400)) {
+  if((valeurHaut > ((int) radius*1.8)&& valeurHaut <= 400) || (valeurHaut < -((int) radius*1.8) && valeurHaut >= -400)) {
     pasHaut = 3;
   }
-  else if((valeurHaut >400) || (valeurHaut <-400)){
+  if((valeurHaut >500) || (valeurHaut <-500)){
     pasHaut = 4;
   }
 
@@ -86,20 +86,20 @@ void loop() {
   if((valeurBas <= radius) || (valeurBas >= -radius)){
     pasHaut = 1;
   }
-   else if((valeurBas <= 150) || (valeurBas >= -150)){
-    pasBas = 2;
+  if((valeurBas > radius && valeurHaut <= ((int) radius*1.8)   ) || (valeurBas < -radius && valeurBas >=  -((int) radius*1.8) )){
+    pasBas = 1;
   }
-  else if((valeurBas > 200 && valeurHaut <= 400) || (valeurBas <-200 && valeurHaut >= -400)){
+  if((valeurBas > ((int) radius*1.8) && valeurHaut <= 400) || (valeurBas <-((int) radius*1.8)&& valeurHaut >= -400)){
     pasBas = 3;
   }
-  else if((valeurBas >400) || (valeurBas < -400)){
+  else if((valeurBas >500) || (valeurBas < -500)){
     pasBas = 4;
   }
-  //////Serial.print("PasHaut : ");
-  //////Serial.println(pasHaut);
+  Serial.print("PasHaut : ");
+  Serial.println(pasHaut);
 
-  //////Serial.print("PasBas : ");
-  //////Serial.println(pasBas);
+  Serial.print("PasBas : ");
+  Serial.println(pasBas);
   //////Serial.print("valeurHaut : ");
   //////Serial.println(valeurHaut );
   ////Serial.print("valeurTirer : ");
@@ -116,7 +116,7 @@ void loop() {
   
   //Bas
   
-  if (valeurHaut < -radius/2 && positionServoHaut-1 >= 30)
+  if (valeurHaut < -cercleJaune && positionServoHaut-1 >= 30)
   {
     positionServoHaut -= pasHaut;
     servoHaut.write(positionServoHaut);
@@ -125,7 +125,7 @@ void loop() {
   }
 
   //Haut
-  if (valeurHaut > radius/2 && positionServoHaut+1<=100)
+  if (valeurHaut > cercleJaune && positionServoHaut+1<=100)
   {
     positionServoHaut += pasHaut;
     servoHaut.write(positionServoHaut);
@@ -140,7 +140,7 @@ void loop() {
 
   // Droite
   
-  if (valeurBas < -radius/2 && positionServoBas-1>=0)
+  if (valeurBas < -cercleJaune && positionServoBas-1>=0)
   {
     positionServoBas -= pasBas;
     servoBas.write(positionServoBas);
@@ -150,7 +150,7 @@ void loop() {
   }
   
   // Gauche
-  if (valeurBas > radius/2 && positionServoBas+1<120)
+  if (valeurBas > cercleJaune && positionServoBas+1<120)
   {
     positionServoBas += pasBas;
     servoBas.write(positionServoBas);
