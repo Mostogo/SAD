@@ -10,8 +10,8 @@ Servo servoBas;  // crée l’objet pour contrôler le servomoteur du bas
 
 int valeurHaut = 0;
 int valeurBas = 0;
-int pasHaut = 2;
-int pasBas = 2;
+int pasHaut = 1;
+int pasBas = 1;
 
 int valeurTirer = 0;
 int radius = 0;
@@ -67,22 +67,26 @@ void loop() {
   //pasHaut = (int) valeurHaut/10;
   
   // controler le servomoteur du haut
-  /*
-  if((valeurHaut <= 150) || (valeurHaut >= -150)){
+  if((valeurHaut <= radius) || (valeurHaut >= -radius)){
     pasHaut = 1;
   }
-  if((valeurBas <= 150) || (valeurBas >= -150)){
-    pasBas = 1;
-  }*/
-  /*
-  else if((valeurHaut > 200 && valeurHaut <= 400) || (valeurHaut < -200 && valeurHaut >= -400)) {
+  
+  else if((valeurHaut <= 150) || (valeurHaut >= -150)){
+    pasHaut = 2;
+  }
+  
+  else if((valeurHaut > 150 && valeurHaut <= 400) || (valeurHaut < -150 && valeurHaut >= -400)) {
     pasHaut = 3;
   }
   else if((valeurHaut >400) || (valeurHaut <-400)){
     pasHaut = 4;
   }
-  
-   if((valeurBas <= 200) || (valeurBas >= -200)){
+
+
+  if((valeurBas <= radius) || (valeurBas >= -radius)){
+    pasHaut = 1;
+  }
+   else if((valeurBas <= 150) || (valeurBas >= -150)){
     pasBas = 2;
   }
   else if((valeurBas > 200 && valeurHaut <= 400) || (valeurBas <-200 && valeurHaut >= -400)){
@@ -90,42 +94,43 @@ void loop() {
   }
   else if((valeurBas >400) || (valeurBas < -400)){
     pasBas = 4;
-  }*/
-  ////Serial.print("PasHaut : ");
-  ////Serial.println(pasHaut);
+  }
+  //////Serial.print("PasHaut : ");
+  //////Serial.println(pasHaut);
 
-  ////Serial.print("PasBas : ");
-  ////Serial.println(pasBas);
-  ////Serial.print("valeurHaut : ");
-  ////Serial.println(valeurHaut );
+  //////Serial.print("PasBas : ");
+  //////Serial.println(pasBas);
+  //////Serial.print("valeurHaut : ");
+  //////Serial.println(valeurHaut );
+  ////Serial.print("valeurTirer : ");
+  ////Serial.println(valeurTirer );
 /*
-  //Serial.print("valeurBas : ");
-  //Serial.println(valeurBas );
+  ////Serial.print("valeurBas : ");
+  ////Serial.println(valeurBas );
 
-  //Serial.print("valeurTirer : ");
-  //Serial.println(valeurTirer );
+  
 
-  //Serial.print("raidus : ");
-  //Serial.println(radius );*/
+  ////Serial.print("raidus : ");
+  ////Serial.println(radius );*/
   
   
   //Bas
   
-  if (valeurHaut < -40 && positionServoHaut-1 >= 30)
+  if (valeurHaut < -radius/2 && positionServoHaut-1 >= 30)
   {
     positionServoHaut -= pasHaut;
     servoHaut.write(positionServoHaut);
-    //Serial.print("Position haut + arduino à python : ");
-    //Serial.println(positionServoHaut);
+    ////Serial.print("Position haut + arduino à python : ");
+    ////Serial.println(positionServoHaut);
   }
 
   //Haut
-  if (valeurHaut > 40 && positionServoHaut+1<=100)
+  if (valeurHaut > radius/2 && positionServoHaut+1<=100)
   {
     positionServoHaut += pasHaut;
     servoHaut.write(positionServoHaut);
-    //Serial.print("Position haut - arduino à python : ");
-    //////Serial.println(positionServoHaut);
+    ////Serial.print("Position haut - arduino à python : ");
+    ////////Serial.println(positionServoHaut);
   }
   /*
   if (valeurHaut == 0)
@@ -133,23 +138,23 @@ void loop() {
     servoHaut.write(positionServoHaut);
   }*/
 
-  // GAUCHE
+  // Droite
   
-  if (valeurBas > 40 && positionServoBas+1<120)
+  if (valeurBas < -radius/2 && positionServoBas-1>=0)
   {
     positionServoBas -= pasBas;
     servoBas.write(positionServoBas);
-    //Serial.print("Position bas + arduino à python : ");
+    //Serial.print("Droiiiiite : ");
     //Serial.println(positionServoBas);
 
   }
   
-  // Droite
-  if (valeurBas < -40 && positionServoBas-1>=0)
+  // Gauche
+  if (valeurBas > radius/2 && positionServoBas+1<120)
   {
     positionServoBas += pasBas;
     servoBas.write(positionServoBas);
-    //Serial.print("Position bas - arduino à python : ");
+    //Serial.print("Gauuuuche : ");
     //Serial.println(positionServoBas);
 
   }
@@ -159,15 +164,15 @@ void loop() {
     servoBas.write(positionServoBas);
   }*/
 
-  if (valeurTirer == 1)
+  if (valeurRecueTirer[0] == '1')
   {
     digitalWrite(LASER, HIGH);
     //digitalWrite(LEDPIN, HIGH);
   }
-  if(valeurTirer == 0)
+  else
   {
     digitalWrite(LASER, LOW);
    // digitalWrite(LEDPIN, LOW);
   }
-  delay(10);
+  delay(100);
 }
