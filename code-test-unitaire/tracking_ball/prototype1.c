@@ -3,6 +3,8 @@
 
 #define LEDPIN 13
 #define LASER 7
+#define HAUT 1
+#define BAS 2
 
 Servo servoHaut;  // crée l’objet pour contrôler le servomoteur du haut
 Servo servoBas;  // crée l’objet pour contrôler le servomoteur du bas
@@ -12,10 +14,19 @@ int valeurHaut = 0;
 int valeurBas = 0;
 int pasHaut = 1;
 int pasBas = 1;
+int compteurHaut=0;
+int compteurBas=0;
 
 int valeurTirer = 0;
 int radius = 0;
 
+int tabHaut[10] = {0, 0, 0, 0, 0, 0 ,0 ,0 ,0, 0};
+int tabBas[10]  = {0, 0, 0, 0, 0, 0 ,0 ,0 ,0, 0};
+int cptPos = 0;
+int vitesseHaut = 0;
+int vitesseBas = 0;
+int vitesseHaut_tmp = 0;
+int vitesseBas_tmp=0; 
 String myMessage;
 
 int positionServoHaut = 65;
@@ -65,41 +76,42 @@ void loop() {
   radius = valeurradius.toInt();
   cercleJaune = radius/2;
   //pasHaut = (int) valeurHaut/10;
-  
+  calculVitesse();
+  Serial.print("vitesse Haut :");
   // controler le servomoteur du haut
-  if((valeurHaut <= radius) || (valeurHaut >= -radius)){
+  if((vitesseHaut <= radius) || (vitesseHaut >= -radius)){
+    set_vitesse_cyclique(HAUT,8);//vitesse 1/5
+  }
+  
+  if((vitesseHaut > radius && vitesseHaut <= ((int) radius*1.8) ) || (vitesseHaut < -radius && vitesseHaut >= -((int) radius*1.8))){
+    set_vitesse_cyclique(HAUT,5);//vitesse 1/3
+  }
+  
+  if((vitesseHaut > ((int) radius*1.8)&& vitesseHaut <= 400) || (vitesseHaut < -((int) radius*1.8) && vitesseHaut >= -400)) {
+    set_vitesse_cyclique(HAUT,2);//vitesse 1/3
+  }
+  if((vitesseHaut >500) || (vitesseHaut <-500)){
     pasHaut = 1;
-  }
-  
-  if((valeurHaut > radius && valeurHaut <= ((int) radius*1.8) ) || (valeurHaut < -radius && valeurHaut >= -((int) radius*1.8))){
-    pasHaut = 2;
-  }
-  
-  if((valeurHaut > ((int) radius*1.8)&& valeurHaut <= 400) || (valeurHaut < -((int) radius*1.8) && valeurHaut >= -400)) {
-    pasHaut = 3;
-  }
-  if((valeurHaut >500) || (valeurHaut <-500)){
-    pasHaut = 4;
   }
 
 
-  if((valeurBas <= radius) || (valeurBas >= -radius)){
-    pasHaut = 1;
+  if((vitesseBas <= radius) || (vitesseBas >= -radius)){
+     set_vitesse_cyclique(HAUT,8);//vitesse 1/5
   }
-  if((valeurBas > radius && valeurHaut <= ((int) radius*1.8)   ) || (valeurBas < -radius && valeurBas >=  -((int) radius*1.8) )){
+  if((vitesseBas > radius && vitesseBas <= ((int) radius*1.8)   ) || (vitesseBas < -radius && vitesseBas >=  -((int) radius*1.8) )){
+   set_vitesse_cyclique(HAUT,5);//vitesse 1/3
+  }
+  if((vitesseBas > ((int) radius*1.8) && vitesseBas <= 400) || (vitesseBas <-((int) radius*1.8)&& vitesseBas >= -400)){
+   set_vitesse_cyclique(HAUT,2);//vitesse 1/3
+  }
+  else if((vitesseBas >500) || (vitesseBas < -500)){
     pasBas = 1;
   }
-  if((valeurBas > ((int) radius*1.8) && valeurHaut <= 400) || (valeurBas <-((int) radius*1.8)&& valeurHaut >= -400)){
-    pasBas = 3;
-  }
-  else if((valeurBas >500) || (valeurBas < -500)){
-    pasBas = 4;
-  }
-  Serial.print("PasHaut : ");
-  Serial.println(pasHaut);
+  //Serial.print("PasHaut : ");
+  //Serial.println(pasHaut);
 
-  Serial.print("PasBas : ");
-  Serial.println(pasBas);
+  //Serial.print("PasBas : ");
+  //Serial.println(pasBas);
   //////Serial.print("valeurHaut : ");
   //////Serial.println(valeurHaut );
   ////Serial.print("valeurTirer : ");
@@ -116,7 +128,7 @@ void loop() {
   
   //Bas
   
-  if (valeurHaut < -cercleJaune && positionServoHaut-1 >= 30)
+  if (vitesseHaut < -cercleJaune && positionServoHaut-1 >= 30)
   {
     positionServoHaut -= pasHaut;
     servoHaut.write(positionServoHaut);
@@ -125,7 +137,7 @@ void loop() {
   }
 
   //Haut
-  if (valeurHaut > cercleJaune && positionServoHaut+1<=100)
+  if (vitesseHaut > cercleJaune && positionServoHaut+1<=100)
   {
     positionServoHaut += pasHaut;
     servoHaut.write(positionServoHaut);
@@ -140,7 +152,7 @@ void loop() {
 
   // Droite
   
-  if (valeurBas < -cercleJaune && positionServoBas-1>=0)
+  if (vitesseBas < -cercleJaune && positionServoBas-1>=0)
   {
     positionServoBas -= pasBas;
     servoBas.write(positionServoBas);
@@ -150,7 +162,7 @@ void loop() {
   }
   
   // Gauche
-  if (valeurBas > cercleJaune && positionServoBas+1<120)
+  if (vitesseBas > cercleJaune && positionServoBas+1<120)
   {
     positionServoBas += pasBas;
     servoBas.write(positionServoBas);
@@ -174,5 +186,43 @@ void loop() {
     digitalWrite(LASER, LOW);
    // digitalWrite(LEDPIN, LOW);
   }
-  delay(100);
+  delay(20);
+}
+
+void set_vitesse_cyclique(int pas, int diviseur)
+{
+  if(pas==1) //pas du haut
+  {
+    compteurHaut=compteurHaut+1;
+    if(diviseur==compteurHaut)
+    {
+      compteurHaut=0;
+      pasHaut=1;
+    }
+  }
+  else if(pas==2) //pas du bas
+  {
+    compteurBas=compteurBas+1;
+    if(diviseur==compteurBas)
+    {
+      compteurBas=0;
+      pasBas=1;
+    }
+  }
+}
+
+void calculVitesse(){
+  int somme = 0;
+  tabHaut[cptPos%10] =   valeurHaut;
+  tabBas[cptPos%10] =   valeurBas;
+  cptPos++;
+  for(int i =0; i<10;i++){
+    somme = somme + tabHaut[cptPos%10];
+  }
+  vitesseHaut = (int) somme/10;
+  for(int i =0; i<10;i++){
+    somme = somme + tabBas[cptPos%10];
+  }
+  vitesseBas = (int) somme/10;
+  
 }
