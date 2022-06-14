@@ -199,6 +199,10 @@ void set_vitesse_cyclique(int pas, int diviseur)
       compteurHaut=0;
       pasHaut=1;
     }
+    else
+    {
+      pasHaut=0;
+    }
   }
   else if(pas==2) //pas du bas
   {
@@ -207,6 +211,10 @@ void set_vitesse_cyclique(int pas, int diviseur)
     {
       compteurBas=0;
       pasBas=1;
+    }
+    else
+    {
+      pasBas=0;
     }
   }
 }
@@ -224,5 +232,4 @@ void calculVitesse(){
     somme = somme + tabBas[cptPos%10];
   }
   vitesseBas = (int) somme/10;
-  
 }
